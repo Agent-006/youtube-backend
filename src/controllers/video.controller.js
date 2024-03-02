@@ -1,4 +1,3 @@
-import mongoose, { isValidObjectId } from "mongoose";
 import { Video } from "../models/video.models.js";
 import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -39,7 +38,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     const videoFile = await uploadOnCloudinary(videoLocalPath);
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
 
-    if (!(videoFile || thumbnail)) {
+    if (!(videoFile.url || thumbnail.url)) {
         throw new ApiError("video and thumbnail files both are required");
     }
 
@@ -51,6 +50,13 @@ const publishAVideo = asyncHandler(async (req, res) => {
         thumbnail: thumbnail.url,
         owner: req.user?._id,
     });
+
+    if (!video) {
+        throw new ApiError(
+            500,
+            "Something went wrong while saving the video to database"
+        );
+    }
 
     const uploadedVideo = await Video.findById(video._id);
 
