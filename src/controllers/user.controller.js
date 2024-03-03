@@ -467,7 +467,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                         // modifiying the datastructure for ease of front-end
                         $addFields: {
                             owner: {
-                                $first: "$owner", // doing this, it will return an object rather that returning an array.
+                                $first: "$owner", // doing this, it will return an object rather than returning an array.
                             },
                         },
                     },
