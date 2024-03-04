@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import { Like } from "../models/like.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -10,6 +11,12 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     // check whether user already liked the video ?
     if (!videoId) {
         throw new ApiError(400, "Video not found");
+    }
+
+    const isValidId = isValidObjectId(videoId);
+
+    if (!isValidId) {
+        throw new ApiError(401, "Invalid video id");
     }
 
     const isLiked = await Like.find({
@@ -49,6 +56,12 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 
     if (!commentId) {
         throw new ApiError(400, "User already liked the comment");
+    }
+
+    const isValidId = isValidObjectId(commentId);
+
+    if (!isValidId) {
+        throw new ApiError(401, "Invalid comment id");
     }
 
     const isLiked = await Like.find({
@@ -94,6 +107,12 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User already liked the comment");
     }
 
+    const isValidId = isValidObjectId(tweetId);
+
+    if (!isValidId) {
+        throw new ApiError(401, "Invalid tweet id");
+    }
+    
     const isLiked = await Like.find({
         $and: [{ tweet: tweetId }, { likedBy: req.user?._id }],
     });
